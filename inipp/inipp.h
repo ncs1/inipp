@@ -80,9 +80,8 @@ static inline bool extract(const std::basic_string<CharT> &value, T &dst)
   if ((is >> std::boolalpha >> result) && !(is >> c)) {
     dst = result;
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 template<typename CharT>
@@ -129,30 +128,36 @@ public:
   {
     String line;
     String section;
+
     while (std::getline(is, line)) {
       detail::ltrim(line);
       detail::rtrim(line);
       const auto length = line.length();
+
       if (length > 0) {
         const auto pos    = line.find_first_of(char_assign);
         const auto &front = line.front();
+
         if (front == char_comment) {
           continue;
         } else if (front == char_section_start) {
-          if (line.back() == char_section_end)
+          if (line.back() == char_section_end) {
             section = line.substr(1, length - 2);
-          else
+          } else {
             errors.push_back(line);
+          }
         } else if (pos != 0 && pos != String::npos) {
           String variable(line.substr(0, pos));
           String value(line.substr(pos + 1, length));
           detail::rtrim(variable);
           detail::ltrim(value);
           auto &sec = sections[section];
-          if (sec.find(variable) == sec.end())
+
+          if (sec.find(variable) == sec.end()) {
             sec.insert(std::make_pair(variable, value));
-          else
+          } else {
             errors.push_back(line);
+          }
         } else {
           errors.push_back(line);
         }
@@ -164,23 +169,30 @@ public:
   {
     int global_iteration = 0;
     auto changed         = false;
+
     // replace each "${variable}" by "${section:variable}"
-    for (auto &sec : sections)
+    for (auto &sec : sections) {
       replace_symbols(local_symbols(sec.first, sec.second), sec.second);
+    }
     // replace each "${section:variable}" by its value
+
     do {
       changed         = false;
       const auto syms = global_symbols();
-      for (auto &sec : sections)
+
+      for (auto &sec : sections) {
         changed |= replace_symbols(syms, sec.second);
+      }
     } while (changed && (max_interpolation_depth > global_iteration++));
   }
 
   void default_section(const Section &sec)
   {
-    for (auto &sec2 : sections)
-      for (const auto &val : sec)
+    for (auto &sec2 : sections) {
+      for (const auto &val : sec) {
         sec2.second.insert(val);
+      }
+    }
   }
 
   void clear()
@@ -205,26 +217,31 @@ private:
   auto local_symbols(const String &sec_name, const Section &sec) const
   {
     Symbols result;
-    for (const auto &val : sec)
+    for (const auto &val : sec) {
       result.push_back(std::make_pair(local_symbol(val.first), global_symbol(sec_name, val.first)));
+    }
     return result;
   }
 
   auto global_symbols() const
   {
     Symbols result;
-    for (const auto &sec : sections)
-      for (const auto &val : sec.second)
+    for (const auto &sec : sections) {
+      for (const auto &val : sec.second) {
         result.push_back(std::make_pair(global_symbol(sec.first, val.first), val.second));
+      }
+    }
     return result;
   }
 
   bool replace_symbols(const Symbols &syms, Section &sec) const
   {
     auto changed = false;
-    for (auto &sym : syms)
-      for (auto &val : sec)
+    for (auto &sym : syms) {
+      for (auto &val : sec) {
         changed |= detail::replace(val.second, sym.first, sym.second);
+      }
+    }
     return changed;
   }
 };
