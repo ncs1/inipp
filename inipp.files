@@ -1,0 +1,9 @@
+CMakeLists.txt
+LICENSE.txt
+README.md
+example/example.cpp
+inipp/inipp.h
+unittest/CMakeLists.txt
+unittest/headertest.cpp
+unittest/test.h
+unittest/unittest.cpp
