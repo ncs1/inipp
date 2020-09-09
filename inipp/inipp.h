@@ -95,9 +95,9 @@ template<class CharT>
 class Ini
 {
 public:
-  typedef std::basic_string<CharT> String;
-  typedef std::map<String, String> Section;
-  typedef std::map<String, Section> Sections;
+  using String   = std::basic_string<CharT>;
+  using Section  = std::map<String, String>;
+  using Sections = std::map<String, Section>;
 
   Sections sections;
   std::list<String> errors;
@@ -202,7 +202,7 @@ public:
   }
 
 private:
-  typedef std::list<std::pair<String, String>> Symbols;
+  using Symbols = std::list<std::pair<String, String>>;
 
   static auto local_symbol(const String &name)
   {
