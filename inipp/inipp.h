@@ -204,17 +204,17 @@ public:
 private:
   typedef std::list<std::pair<String, String>> Symbols;
 
-  auto local_symbol(const String &name) const
+  static auto local_symbol(const String &name)
   {
     return char_interpol + (char_interpol_start + name + char_interpol_end);
   }
 
-  auto global_symbol(const String &sec_name, const String &name) const
+  static auto global_symbol(const String &sec_name, const String &name)
   {
     return local_symbol(sec_name + char_interpol_sep + name);
   }
 
-  auto local_symbols(const String &sec_name, const Section &sec) const
+  static auto local_symbols(const String &sec_name, const Section &sec)
   {
     Symbols result;
     for (const auto &val : sec) {
@@ -234,7 +234,7 @@ private:
     return result;
   }
 
-  bool replace_symbols(const Symbols &syms, Section &sec) const
+  static bool replace_symbols(const Symbols &syms, Section &sec)
   {
     auto changed = false;
     for (auto &sym : syms) {
