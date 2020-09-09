@@ -102,14 +102,14 @@ public:
   Sections sections;
   std::list<String> errors;
 
-  static constexpr CharT char_section_start  = (CharT) '[';
-  static constexpr CharT char_section_end    = (CharT) ']';
-  static constexpr CharT char_assign         = (CharT) '=';
-  static constexpr CharT char_comment        = (CharT) ';';
-  static constexpr CharT char_interpol       = (CharT) '$';
-  static constexpr CharT char_interpol_start = (CharT) '{';
-  static constexpr CharT char_interpol_sep   = (CharT) ':';
-  static constexpr CharT char_interpol_end   = (CharT) '}';
+  static constexpr CharT char_section_start  = static_cast<CharT>('[');
+  static constexpr CharT char_section_end    = static_cast<CharT>(']');
+  static constexpr CharT char_assign         = static_cast<CharT>('=');
+  static constexpr CharT char_comment        = static_cast<CharT>(';');
+  static constexpr CharT char_interpol       = static_cast<CharT>('$');
+  static constexpr CharT char_interpol_start = static_cast<CharT>('{');
+  static constexpr CharT char_interpol_sep   = static_cast<CharT>(':');
+  static constexpr CharT char_interpol_end   = static_cast<CharT>('}');
 
   static constexpr int max_interpolation_depth = 10;
 
