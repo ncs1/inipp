@@ -41,13 +41,13 @@ namespace detail {
 // trim functions based on http://stackoverflow.com/a/217605
 
 template<class CharT>
-inline void ltrim(std::basic_string<CharT> &s)
+static inline void ltrim(std::basic_string<CharT> &s)
 {
   s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) { return !std::isspace(ch); }));
 }
 
 template<class CharT>
-inline void rtrim(std::basic_string<CharT> &s)
+static inline void rtrim(std::basic_string<CharT> &s)
 {
   s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) { return !std::isspace(ch); }).base(),
           s.end());
@@ -56,8 +56,8 @@ inline void rtrim(std::basic_string<CharT> &s)
 // string replacement function based on http://stackoverflow.com/a/3418285
 
 template<class CharT>
-inline bool replace(std::basic_string<CharT> &str, const std::basic_string<CharT> &from,
-                    const std::basic_string<CharT> &to)
+static inline bool replace(std::basic_string<CharT> &str, const std::basic_string<CharT> &from,
+                           const std::basic_string<CharT> &to)
 {
   auto changed     = false;
   size_t start_pos = 0;
@@ -72,7 +72,7 @@ inline bool replace(std::basic_string<CharT> &str, const std::basic_string<CharT
 } // namespace detail
 
 template<typename CharT, typename T>
-inline bool extract(const std::basic_string<CharT> &value, T &dst)
+static inline bool extract(const std::basic_string<CharT> &value, T &dst)
 {
   CharT c;
   std::basic_istringstream<CharT> is{ value };
@@ -86,7 +86,7 @@ inline bool extract(const std::basic_string<CharT> &value, T &dst)
 }
 
 template<typename CharT>
-inline bool extract(const std::basic_string<CharT> &value, std::basic_string<CharT> &dst)
+static inline bool extract(const std::basic_string<CharT> &value, std::basic_string<CharT> &dst)
 {
   dst = value;
   return true;
