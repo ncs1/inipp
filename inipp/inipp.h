@@ -198,7 +198,7 @@ public:
       for (auto &sec : sections) {
         changed |= replace_symbols(syms, sec.second);
       }
-    } while (changed && (max_interpolation_depth > global_iteration++));
+    } while (changed && (likely(max_interpolation_depth > global_iteration++)));
   }
 
   void default_section(const Section &sec)
