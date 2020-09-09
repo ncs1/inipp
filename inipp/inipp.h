@@ -34,6 +34,13 @@ SOFTWARE.
 #include <cctype>
 #include <sstream>
 
+#ifndef likely
+#define likely(expr) __builtin_expect(!!(expr), 1)
+#endif
+#ifndef unlikely
+#define unlikely(expr) __builtin_expect(!!(expr), 0)
+#endif
+
 namespace inipp {
 
 namespace detail {
@@ -127,41 +134,49 @@ public:
   void parse(std::basic_istream<CharT> &is)
   {
     String line;
-    String section;
 
     while (std::getline(is, line)) {
       detail::ltrim(line);
       detail::rtrim(line);
       const auto length = line.length();
 
-      if (length > 0) {
-        const auto pos    = line.find_first_of(char_assign);
-        const auto &front = line.front();
-
-        if (front == char_comment) {
-          continue;
-        } else if (front == char_section_start) {
-          if (line.back() == char_section_end) {
-            section = line.substr(1, length - 2);
-          } else {
-            errors.push_back(line);
-          }
-        } else if (pos != 0 && pos != String::npos) {
-          String variable(line.substr(0, pos));
-          String value(line.substr(pos + 1, length));
-          detail::rtrim(variable);
-          detail::ltrim(value);
-          auto &sec = sections[section];
-
-          if (sec.find(variable) == sec.end()) {
-            sec.insert(std::make_pair(variable, value));
-          } else {
-            errors.push_back(line);
-          }
-        } else {
-          errors.push_back(line);
-        }
+      if (length <= 0) {
+        continue;
       }
+
+      const auto pos    = line.find_first_of(char_assign);
+      const auto &front = line.front();
+      String section;
+
+      if (front == char_comment) {
+        continue;
+      }
+
+      if (front == char_section_start) {
+        if (unlikely(line.back() != char_section_end)) {
+          goto err;
+        }
+        section = line.substr(1, length - 2);
+        continue;
+      }
+
+      if (pos != 0 && pos != String::npos) {
+        String variable(line.substr(0, pos));
+        String value(line.substr(pos + 1, length));
+        detail::rtrim(variable);
+        detail::ltrim(value);
+        auto &sec = sections[section];
+
+        if (unlikely(sec.find(variable) != sec.end())) {
+          goto err;
+        }
+
+        sec.insert(std::make_pair(variable, value));
+        continue;
+      }
+
+    err:
+      errors.push_back(line);
     }
   }
 
