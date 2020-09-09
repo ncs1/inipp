@@ -117,11 +117,11 @@ public:
   void generate(std::basic_ostream<CharT> &os) const
   {
     for (auto const &sec : sections) {
-      os << char_section_start << sec.first << char_section_end << std::endl;
+      os << char_section_start << sec.first << char_section_end << '\n';
       for (auto const &val : sec.second) {
-        os << val.first << char_assign << val.second << std::endl;
+        os << val.first << char_assign << val.second << '\n';
       }
-      os << std::endl;
+      os << '\n';
     }
   }
 
