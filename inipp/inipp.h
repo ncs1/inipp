@@ -134,6 +134,7 @@ public:
   void parse(std::basic_istream<CharT> &is)
   {
     String line;
+    String section;
 
     while (std::getline(is, line)) {
       detail::ltrim(line);
@@ -146,7 +147,6 @@ public:
 
       const auto pos    = line.find_first_of(char_assign);
       const auto &front = line.front();
-      String section;
 
       if (front == char_comment) {
         continue;
