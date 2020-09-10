@@ -122,9 +122,9 @@ public:
 
   void generate(std::basic_ostream<CharT> &os) const
   {
-    for (auto const &sec : sections) {
+    for (auto const &&sec : sections) {
       os << char_section_start << sec.first << char_section_end << '\n';
-      for (auto const &val : sec.second) {
+      for (auto const &&val : sec.second) {
         os << val.first << char_assign << val.second << '\n';
       }
       os << '\n';
@@ -186,7 +186,7 @@ public:
     auto changed         = false;
 
     // replace each "${variable}" by "${section:variable}"
-    for (auto &sec : sections) {
+    for (auto &&sec : sections) {
       replace_symbols(local_symbols(sec.first, sec.second), sec.second);
     }
     // replace each "${section:variable}" by its value
@@ -195,7 +195,7 @@ public:
       changed         = false;
       const auto syms = global_symbols();
 
-      for (auto &sec : sections) {
+      for (auto &&sec : sections) {
         changed |= replace_symbols(syms, sec.second);
       }
     } while (changed && (likely(max_interpolation_depth > global_iteration++)));
@@ -203,8 +203,8 @@ public:
 
   void default_section(const Section &sec)
   {
-    for (auto &sec2 : sections) {
-      for (const auto &val : sec) {
+    for (auto &&sec2 : sections) {
+      for (const auto &&val : sec) {
         sec2.second.insert(val);
       }
     }
@@ -232,7 +232,7 @@ private:
   static auto local_symbols(const String &sec_name, const Section &sec)
   {
     Symbols result;
-    for (const auto &val : sec) {
+    for (const auto &&val : sec) {
       result.push_back(std::make_pair(local_symbol(val.first), global_symbol(sec_name, val.first)));
     }
     return result;
@@ -241,8 +241,8 @@ private:
   auto global_symbols() const
   {
     Symbols result;
-    for (const auto &sec : sections) {
-      for (const auto &val : sec.second) {
+    for (const auto &&sec : sections) {
+      for (const auto &&val : sec.second) {
         result.push_back(std::make_pair(global_symbol(sec.first, val.first), val.second));
       }
     }
@@ -252,8 +252,8 @@ private:
   static bool replace_symbols(const Symbols &syms, Section &sec)
   {
     auto changed = false;
-    for (auto &sym : syms) {
-      for (auto &val : sec) {
+    for (auto &&sym : syms) {
+      for (auto &&val : sec) {
         changed |= detail::replace(val.second, sym.first, sym.second);
       }
     }
