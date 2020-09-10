@@ -2,6 +2,9 @@ CMakeLists.txt
 LICENSE.txt
 README.md
 example/example.cpp
+example/example.ini
+inipp.cflags
+inipp.cxxflags
 inipp/inipp.h
 unittest/CMakeLists.txt
 unittest/headertest.cpp
